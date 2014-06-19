@@ -23,7 +23,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class='navbar-brand' href='index.html'>Searchable Map Template</a>
+          <a class='navbar-brand' href='index.html'>World Energy Map</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
@@ -54,17 +54,41 @@
               </label>
             </p>
             <br />
+
             <div class='row'>
               <h4>
-                Sex
+                Kind
               </h4>
               <label>
-              <select id='sex'>
-                <option value='male'>male</option>
-                <option value='female'>female</option>
+              <select id='sheet'>
+                <option value=''>Any value</option>
+                <option value='Consulting Firm'>Consulting Firm</option>
+                <option value='Electricity'>Electricity</option>
+                <option value='Governmental Agency'>Governmental Agency</option>
+                <option value='Oil & Gas'>Oil & Gas</option>
+                <option value='Oil Field'>Oil Field</option>
+                <option value='Port'>Port</option>
+                <option value='Renewable Company'>Renewable Company</option>
+                <option value='SME'>SME</option>
+                <option value='Startup'>Startup</option>
+                <option value='Think Tank'>Think Tank</option>
+                <option value='University Club'>University Club</option>
               </select>
             </div>
-            <div id='results_list'></div>
+
+            <div class='row'>
+              <h4>
+                Country
+              </h4>
+              <label>
+              <select id='country'>
+                <option value=''>Any value</option>
+                <option value='Americas'>Americas</option>
+                <option value='Asia/Pacific Rim'>Asia/Pacific Rim</option>
+                <option value='EMEA'>EMEA</option>
+              </select>
+            </div>
+
 
             <br />
             <a class='btn btn-primary' id='search' href='#'>
@@ -92,6 +116,8 @@
         </div>
       </div>
     </div>
+
+    <div id='results_list'></div>
 
     <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>

@@ -13,6 +13,7 @@
 // Enable the visual refresh
 google.maps.visualRefresh = true;
 
+var description = "";
 var MapsLib = MapsLib || {};
 var MapsLib = {
 
@@ -21,16 +22,16 @@ var MapsLib = {
 
   //the encrypted Table ID of your Fusion Table (found under File => About)
   //NOTE: numeric IDs will be depricated soon
-  fusionTableId:      "16NHWA43gotcxLC4cVcb4gs3b1M0zkLchv900aa18",
+  fusionTableId:      "1qtyVJfbQ_lmxpiybx7ORfuvKJemURWnzWGPxNDF2",
 
   //*New Fusion Tables Requirement* API key. found at https://code.google.com/apis/console/
   //*Important* this key is for demonstration purposes. please register your own.
-  googleApiKey:       "AIzaSyAGA2y8UosuuYZOaMznt2vAeX0gmCw6hv4",
+  googleApiKey:       "AIzaSyA3FQFrNr5W2OEVmuENqhb2MBB2JabdaOY",
 
   //name of the location column in your Fusion Table.
   //NOTE: if your location column name has spaces in it, surround it with single quotes
   //example: locationColumn:     "'my location'",
-  locationColumn:     "latitude",
+  locationColumn:     "Address",
 
   map_centroid:       new google.maps.LatLng(41.8781136, -87.66677856445312), //center that your map defaults to
   locationScope:      "La Cruz",      //geographical area appended to all address searches
@@ -88,9 +89,11 @@ var MapsLib = {
     var whereClause = MapsLib.locationColumn + " not equal to ''";
 
     //-----custom filters-------
-    if ( $("#sex").val() != "")
-      whereClause += " AND 'sex' = '" + $("#sex").val() + "'";
+    if ( $("#sheet").val() != "")
+      whereClause += " AND 'Sheet' = '" + $("#sheet").val() + "'";
 
+    if ( $("#country").val() != "")
+      whereClause += " AND 'Country' = '" + $("#country").val() + "'";
     //-------end of custom filters--------
 
     if (address != "") {
@@ -269,8 +272,46 @@ var MapsLib = {
   },
 
   getList: function(whereClause) {
-    var selectColumns = "voucher, sex, year, elevation ";
+    var selectColumns = "Name, Country, Address";
     MapsLib.query(selectColumns, whereClause, "", "", "MapsLib.displayList");
+  },
+
+  searchXml: function(name) {
+    var xmlDoc= null;
+    try {
+      if(window.ActiveXObject){ 
+        xmlDoc=new ActiveXObject("Microsoft.XMLDOM"); 
+      }  
+      else if (document.implementation && document.implementation.createDocument){ 
+        xmlDoc = document.implementation.createDocument('','',null); 
+      } 
+      
+      xmlDoc.async="false";
+      xmlDoc.loadXML("currentPartner.xml");
+    }
+    catch(e) {
+      try {  
+        var xmlhttp = new window.XMLHttpRequest();  
+        xmlhttp.open("GET","/currentPartner.xml",false);  
+        xmlhttp.send();  
+        xmlDoc = xmlhttp.responseXML;   
+      }catch(e){  
+
+      }  
+    }
+    var items = xmlDoc.getElementsByTagName("Placemark");
+
+    for (var i = 0; i < items.length; ++i) {
+      if(name == items[i].getElementsByTagName("name")[0].textContent) {
+        description = items[i].getElementsByTagName("description")[0].textContent;
+        break;
+      }
+      else {
+        description = "";
+      }  
+    }
+    
+    
   },
 
   displayList: function(json) {
@@ -283,10 +324,12 @@ var MapsLib = {
 
     if (data == null) {
       //clear results list
-      results.append("<li><span class='lead'>No results found!!!!!</span></li>");
+      results.append("<li><span class='lead'>No results found!!!</span></li>");
     }
     else {
       for (var row in data) {
+        MapsLib.searchXml(data[row][0]);
+
         template = "\
           <div class='row-fluid item-list'>\
             <div class='span12'>\
@@ -296,7 +339,7 @@ var MapsLib = {
               <br />\
               " + data[row][2] + "\
               <br />\
-              " + data[row][3] + "\
+              " + description + "\
             </div>\
           </div>"
         results.append(template);
@@ -304,6 +347,8 @@ var MapsLib = {
     }
     results.fadeIn();
   },
+
+
 
   addCommas: function(nStr) {
     nStr += '';
